@@ -2,7 +2,7 @@
 
 This repo contains PoisonedRAG, the first knowledge poisoning attack against Retrieval-Augmented Generation (RAG) system.
 
-For more details, please refer to the paper here: [https://arxiv.org/abs/xxx](https://arxiv.org/abs/xxx)
+For more details, please refer to our paper here: https://arxiv.org/abs/2402.07867
 
 ![Illustration of PoisonedRAG](PoisonedRAG.jpg "Illustration of PoisonedRAG")
 
@@ -71,6 +71,9 @@ If you use this code, please cite the following paper:
       title={PoisonedRAG: Knowledge Poisoning Attacks to Retrieval-Augmented Generation of Large Language Models}, 
       author={Wei Zou and Runpeng Geng and Binghui Wang and Jinyuan Jia},
       year={2024},
+      eprint={2402.07867},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR}
 }
 ```
 
