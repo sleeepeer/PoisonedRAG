@@ -64,7 +64,7 @@ python run.py
 
 ## Citation
 
-If you use this code, please cite the following paper:
+If you use this code, please cite the following [paper](https://arxiv.org/abs/2402.07867):
 
 ```tex
 @misc{zou2024poisonedrag,
