@@ -14,9 +14,12 @@ For more details, please refer to our paper here: https://arxiv.org/abs/2402.078
 
 ```bash
 conda create -n PoisonedRAG python=3.10
+```
+```bash
 conda activate PoisonedRAG
-
-pip install beir, openai, google-generativeai
+```
+```bash
+pip install beir openai google-generativeai
 pip install torch==1.13.0+cu117 torchvision==0.14.0+cu117 torchaudio==0.13.0 --extra-index-url https://download.pytorch.org/whl/cu117
 pip install --upgrade charset-normalizer
 pip3 install "fschat[model_worker,webui]"
