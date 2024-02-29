@@ -68,7 +68,7 @@ class PaLM2(Model):
             if 'not supported' in str(e):
                 return ''
             else:
-                print('Exceed rate limit, waiting for 5 minute...')
+                print('Error occurs! Please check output carefully.')
                 time.sleep(300)
                 return self.query(msg)
         
