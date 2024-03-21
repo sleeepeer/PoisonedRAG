@@ -37,6 +37,8 @@ python prepare_dataset.py
 
 If you want to use PaLM 2, GPT-3.5, GPT-4 or LLaMA-2, please enter your api key in **model_configs** folder.
 
+For LLaMA-2, the api key is your **HuggingFace Access Tokens**. You could visit [LLaMA-2's HuggingFace Page](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) first if you don't have the access token.
+
 Here is an example:
 
 ```json
@@ -49,6 +51,36 @@ Here is an example:
 ```
 
 ### Reproduce our results
+ 
+There are some hyperparameters in **run.py** such as LLMs and datasets:
+
+```python
+test_params = {
+    # beir_info
+    'eval_model_code': "contriever",
+    'eval_dataset': "nq",            # nq, hotpotqa, msmarco
+    'split': "test",
+    'query_results_dir': 'main',
+
+    # LLM setting
+    'model_name': 'palm2',           # palm2, gpt3.5, gpt4, llama(7b|13b), vicuna(7b|13b|33b)
+    'use_truth': False,
+    'top_k': 5,
+    'gpu_id': 0,
+
+    # attack
+    'attack_method': 'LM_targeted',  # LM_targeted (black-box), hotflip (white-box)
+    'adv_per_query': 5,
+    'score_function': 'dot',
+    'repeat_times': 10,
+    'M': 10,
+    'seed': 12,
+
+    'note': None
+}
+```
+
+
 
 ```bash
 python run.py
