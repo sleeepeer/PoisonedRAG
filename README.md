@@ -54,6 +54,8 @@ Here is an example:
  
 There are some hyperparameters in **run.py** such as LLMs and datasets:
 
+**Note:** Currently we provide default setting for main results in our [paper](https://arxiv.org/abs/2402.07867). We will update and complete other settings later.
+
 ```python
 test_params = {
     # beir_info
@@ -80,7 +82,7 @@ test_params = {
 }
 ```
 
-
+Execute **run.py** to reproduce experiments.
 
 ```bash
 python run.py
