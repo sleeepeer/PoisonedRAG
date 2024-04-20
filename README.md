@@ -4,6 +4,8 @@ This repo contains PoisonedRAG, the first knowledge poisoning attack against Ret
 
 For more details, please refer to our paper here: https://arxiv.org/abs/2402.07867
 
+:fire: Apr 20, 2024 <font color="red">\[News\]: If you have any question or need other code or data, feel free to open an issue or email us! </font>
+
 ![Illustration of PoisonedRAG](PoisonedRAG.jpg "Illustration of PoisonedRAG")
 
 
