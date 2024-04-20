@@ -30,7 +30,7 @@ pip3 install "fschat[model_worker,webui]"
 
 ### Dataset (optional, suggested)
 
-You do not need to download datasets. When running our code, the datasets will be automatically downloaded and saved in `datasets`. But to make this pipeline more stable I suggest you running this line.
+There is no need to manually download datasets. When running our code, the datasets will be automatically downloaded and saved in `datasets`. But to make this pipeline more stable I suggest you running this line.
 
 ```bash
 python prepare_dataset.py
