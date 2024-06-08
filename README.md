@@ -1,19 +1,17 @@
-# PoisonedRAG: Knowledge Poisoning Attacks to Retrieval-Augmented Generation of Large Language Models
+# PoisonedRAG
 
-This repo contains PoisonedRAG, the first knowledge poisoning attack against Retrieval-Augmented Generation (RAG) system.
+Official repo of [PoisonedRAG](https://arxiv.org/abs/2402.07867), the first knowledge poisoning attack against Retrievals-Augmented Generation (RAG) system.
 
-For more details, please refer to our paper here: https://arxiv.org/abs/2402.07867
+**[PoisonedRAG: Knowledge Poisoning Attacks to Retrieval-Augmented Generation of Large Language Models](https://arxiv.org/abs/2402.07867)**
 
-## News
-:fire: Apr 20, 2024 <font color="red">: **If you have any question or need other code or data, feel free to open an issue or email us!** </font>
+## 🚀 News
+🔥 Apr 20, 2024 <font color="red">: **If you have any question or need other code or data, feel free to open an issue or email us!** </font>
 
 ![Illustration of PoisonedRAG](PoisonedRAG.jpg "Illustration of PoisonedRAG")
 
+## 🔍 Quick Usage
 
-
-## Quick Usage
-
-### Setup environment
+### 📃 Setup environment
 
 ```bash
 conda create -n PoisonedRAG python=3.10
@@ -28,15 +26,15 @@ pip install --upgrade charset-normalizer
 pip3 install "fschat[model_worker,webui]"
 ```
 
-### Dataset (optional, suggested)
+### 💽 Dataset (optional, suggested)
 
-There is no need to manually download datasets. When running our code, the datasets will be automatically downloaded and saved in `datasets`. But to make this pipeline more stable I suggest you running this line.
+When running our code, the datasets will be automatically downloaded and saved in `datasets`. You could also run this line to manually download datasets.
 
 ```bash
 python prepare_dataset.py
 ```
 
-### Set API key
+### 🔑 Set API key
 
 If you want to use PaLM 2, GPT-3.5, GPT-4 or LLaMA-2, please enter your api key in **model_configs** folder.
 
@@ -53,7 +51,7 @@ Here is an example:
 },
 ```
 
-### Reproduce our results
+### 📝 Reproduce our results
  
 There are some hyperparameters in **run.py** such as LLMs and datasets:
 
