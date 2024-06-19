@@ -7,7 +7,7 @@ The first knowledge poisoning attack against Retrievals-Augmented Generation (RA
 ## 🚀 News
 🎉 Jun 20, 2024: **PoisonedRAG get accepted to [USENIX Security 2025](https://www.usenix.org/conference/usenixsecurity25)!**
 
-🔥 Apr 20, 2024: If you have any question or need other code or data, feel free to open an issue or email us!
+🔥 Apr 20, 2024: **If you have any question or need other code or data, feel free to open an issue or email us!**
 
 ![Illustration of PoisonedRAG](PoisonedRAG.jpg "Illustration of PoisonedRAG")
 
