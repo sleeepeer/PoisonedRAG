@@ -91,7 +91,8 @@ Execute **run.py** to reproduce experiments.
 python run.py
 ```
 
-
+### 🐱 Your own dataset
+If you want to perform experiments on your own dataset, you could refer to **evaluate_beir.py**, prepare your dataset as the beir format and use this file to compute the retrieval scores.
 
 ## Acknowledgement
 
