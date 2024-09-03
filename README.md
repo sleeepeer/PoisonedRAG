@@ -2,7 +2,7 @@
 
 Official repo of [USENIX Security 2025](https://www.usenix.org/conference/usenixsecurity25) paper: [PoisonedRAG: Knowledge Corruption Attacks to Retrieval-Augmented Generation of Large Language Models](https://arxiv.org/abs/2402.07867).
 
-The first knowledge poisoning attack against Retrievals-Augmented Generation (RAG) system.
+The first knowledge database corruption attack against Retrievals-Augmented Generation (RAG) system.
 
 ## 🚀 News
 🎉 Jun 20, 2024: **PoisonedRAG gets accepted to [USENIX Security 2025](https://www.usenix.org/conference/usenixsecurity25)!**
