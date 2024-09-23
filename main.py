@@ -61,6 +61,8 @@ def main():
         corpus, queries, qrels = load_beir_datasets(args.eval_dataset, args.split)
         incorrect_answers = load_json(f'results/adv_targeted_results/{args.eval_dataset}.json')
 
+    incorrect_answers = list(incorrect_answers.values())
+
     # load BEIR top_k results  
     if args.orig_beir_results is None: 
         print(f"Please evaluate on BEIR first -- {args.eval_model_code} on {args.eval_dataset}")
@@ -105,6 +107,7 @@ def main():
         print(f'######################## Iter: {iter+1}/{args.repeat_times} #######################')
 
         target_queries_idx = range(iter * args.M, iter * args.M + args.M)
+
         target_queries = [incorrect_answers[idx]['question'] for idx in target_queries_idx]
         
         if args.attack_method not in [None, 'None']:
