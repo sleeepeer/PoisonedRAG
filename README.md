@@ -9,7 +9,7 @@ The first knowledge database corruption attack against Retrievals-Augmented Gene
 
 🔥 Apr 20, 2024: **If you have any question or need other code or data, feel free to open an issue or email us!**
 
-![Illustration of PoisonedRAG](PoisonedRAG.jpg "Illustration of PoisonedRAG")
+![Illustration of PoisonedRAG](PoisonedRAG.png "Illustration of PoisonedRAG")
 
 ## 🔍 Quick Usage
 
