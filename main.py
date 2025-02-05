@@ -54,13 +54,10 @@ def main():
 
     # load target queries and answers
     if args.eval_dataset == 'msmarco':
-        corpus, queries, qrels = load_beir_datasets('msmarco', 'train')
-        incorrect_answers = load_json(f'results/adv_targeted_results/{args.eval_dataset}.json')
-        random.shuffle(incorrect_answers)    
-    else:
-        corpus, queries, qrels = load_beir_datasets(args.eval_dataset, args.split)
-        incorrect_answers = load_json(f'results/adv_targeted_results/{args.eval_dataset}.json')
+        args.split = 'train'
 
+    corpus, queries, qrels = load_beir_datasets(args.eval_dataset, args.split)
+    incorrect_answers = load_json(f'results/adv_targeted_results/{args.eval_dataset}.json')
     incorrect_answers = list(incorrect_answers.values())
 
     # load BEIR top_k results  
