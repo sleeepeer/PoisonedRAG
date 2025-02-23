@@ -108,14 +108,11 @@ If you want to perform experiments on your own dataset, you could refer to **eva
 If you use this code, please cite the following [paper](https://arxiv.org/abs/2402.07867):
 
 ```tex
-@misc{zou2024poisonedragknowledgecorruptionattacks,
-      title={PoisonedRAG: Knowledge Corruption Attacks to Retrieval-Augmented Generation of Large Language Models}, 
-      author={Wei Zou and Runpeng Geng and Binghui Wang and Jinyuan Jia},
-      year={2024},
-      eprint={2402.07867},
-      archivePrefix={arXiv},
-      primaryClass={cs.CR},
-      url={https://arxiv.org/abs/2402.07867}, 
+@article{zou2024poisonedrag,
+  title={Poisonedrag: Knowledge corruption attacks to retrieval-augmented generation of large language models},
+  author={Zou, Wei and Geng, Runpeng and Wang, Binghui and Jia, Jinyuan},
+  journal={arXiv preprint arXiv:2402.07867},
+  year={2024}
 }
 ```
 
