@@ -109,11 +109,11 @@ If you use this code, please cite the following [paper](https://arxiv.org/abs/24
 
 ```bib
 @inproceedings{zou2025poisonedrag,
-    title={PoisonedRAG: Knowledge corruption attacks to Retrieval-Augmented generation of large language models},
-    author={Zou, Wei and Geng, Runpeng and Wang, Binghui and Jia, Jinyuan},
-    booktitle={34th USENIX Security Symposium (USENIX Security 25)},
-    pages={3827--3844},
-    year={2025}
+  title={$\{$PoisonedRAG$\}$: Knowledge corruption attacks to $\{$Retrieval-Augmented$\}$ generation of large language models},
+  author={Zou, Wei and Geng, Runpeng and Wang, Binghui and Jia, Jinyuan},
+  booktitle={34th USENIX Security Symposium (USENIX Security 25)},
+  pages={3827--3844},
+  year={2025}
 }
 ```
 
