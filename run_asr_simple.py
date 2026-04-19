@@ -6,12 +6,14 @@ Runs one `main.py` process per (dataset, attack_method) pair, with repeats handl
 """
 
 import argparse
+import ctypes
 import json
 import os
 import subprocess
 import sys
 import time
 from collections import defaultdict
+from types import SimpleNamespace
 
 import numpy as np
 
@@ -48,7 +50,111 @@ def parse_args():
     parser.add_argument("--resume", type=str, default="True")
     parser.add_argument("--timeout_sec", type=int, default=0, help="0 means no timeout")
     parser.add_argument("--python_exec", type=str, default=sys.executable)
+    parser.add_argument(
+        "--live_output",
+        type=str,
+        default="True",
+        help="Stream main.py output live to terminal while also saving logs",
+    )
+    parser.add_argument(
+        "--hf_cache_root",
+        type=str,
+        default=None,
+        help="Optional Hugging Face/Torch cache root. Example: E:\\hf_cache",
+    )
+    parser.add_argument(
+        "--hf_token",
+        type=str,
+        default=None,
+        help="Optional Hugging Face token (overrides env vars for child processes)",
+    )
     return parser.parse_args()
+
+
+def get_windows_filesystem(path):
+    if os.name != "nt":
+        return None
+    try:
+        root = os.path.splitdrive(os.path.abspath(path))[0] + "\\"
+        fs_name = ctypes.create_unicode_buffer(255)
+        result = ctypes.windll.kernel32.GetVolumeInformationW(
+            ctypes.c_wchar_p(root),
+            None,
+            0,
+            None,
+            None,
+            None,
+            fs_name,
+            len(fs_name),
+        )
+        if result == 0:
+            return None
+        return fs_name.value
+    except Exception:
+        return None
+
+
+def choose_ntfs_cache_root():
+    candidates = [r"D:\hf_cache", r"E:\hf_cache", r"C:\hf_cache"]
+    for candidate in candidates:
+        drive_root = os.path.splitdrive(candidate)[0]
+        if not drive_root:
+            continue
+        if not os.path.exists(drive_root + "\\"):
+            continue
+        fs_type = get_windows_filesystem(candidate)
+        if fs_type is None or fs_type.upper() != "FAT32":
+            return candidate
+    return candidates[0]
+
+
+def build_hf_env(args):
+    env = os.environ.copy()
+    env.setdefault("HF_HUB_DISABLE_XET", "1")
+    env.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "0")
+    env.setdefault("HF_HUB_MAX_WORKERS", "1")
+    cache_root = args.hf_cache_root
+    if cache_root is None and os.name == "nt":
+        cache_root = choose_ntfs_cache_root()
+
+    if cache_root is not None and os.name == "nt":
+        fs_type = get_windows_filesystem(cache_root)
+        if fs_type is not None and fs_type.upper() == "FAT32":
+            fallback = choose_ntfs_cache_root()
+            if os.path.normcase(fallback) != os.path.normcase(cache_root):
+                print(
+                    f"Warning: requested hf_cache_root={cache_root} is FAT32 (4GB file limit). "
+                    f"Using {fallback} instead."
+                )
+                cache_root = fallback
+
+    if cache_root:
+        hub_dir = os.path.join(cache_root, "hub")
+        transformers_dir = os.path.join(cache_root, "transformers")
+        torch_dir = os.path.join(cache_root, "torch")
+        tmp_dir = os.path.join(cache_root, "tmp")
+        os.makedirs(hub_dir, exist_ok=True)
+        os.makedirs(transformers_dir, exist_ok=True)
+        os.makedirs(torch_dir, exist_ok=True)
+        os.makedirs(tmp_dir, exist_ok=True)
+
+        env["HF_HOME"] = cache_root
+        env["HF_HUB_CACHE"] = hub_dir
+        env["HUGGINGFACE_HUB_CACHE"] = hub_dir
+        env["TRANSFORMERS_CACHE"] = transformers_dir
+        env["TORCH_HOME"] = torch_dir
+        env["XDG_CACHE_HOME"] = cache_root
+        env["HF_HUB_DISABLE_SYMLINKS_WARNING"] = "1"
+        env["TMPDIR"] = tmp_dir
+        env["TEMP"] = tmp_dir
+        env["TMP"] = tmp_dir
+
+    hf_token = args.hf_token or env.get("HF_TOKEN") or env.get("HUGGINGFACE_HUB_TOKEN")
+    if hf_token:
+        env["HF_TOKEN"] = hf_token
+        env["HUGGINGFACE_HUB_TOKEN"] = hf_token
+
+    return env
 
 
 def run_single_experiment(args, dataset, method_name, attack_method, run_summary_path):
@@ -83,8 +189,67 @@ def run_single_experiment(args, dataset, method_name, attack_method, run_summary
 
     start = time.time()
     timeout = args.timeout_sec if args.timeout_sec > 0 else None
-    completed = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    live_output = str2bool(args.live_output)
+    child_env = build_hf_env(args)
+    print(
+        "HF env:",
+        f"cache={child_env.get('HF_HUB_CACHE', '<default>')}",
+        f"temp={child_env.get('TMP', '<default>')}",
+        f"token={'set' if (child_env.get('HF_TOKEN') or child_env.get('HUGGINGFACE_HUB_TOKEN')) else 'missing'}",
+    )
+
+    if not live_output:
+        completed = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, env=child_env)
+        elapsed = time.time() - start
+        return completed, elapsed, run_name
+
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        env=child_env,
+    )
+
+    combined_lines = []
+    timed_out = False
+
+    try:
+        while True:
+            if proc.stdout is not None:
+                line = proc.stdout.readline()
+            else:
+                line = ""
+
+            if line:
+                print(line, end="")
+                combined_lines.append(line)
+
+            if proc.poll() is not None:
+                break
+
+            if timeout is not None and (time.time() - start) > timeout:
+                timed_out = True
+                proc.kill()
+                break
+    finally:
+        if proc.stdout is not None:
+            tail = proc.stdout.read()
+            if tail:
+                print(tail, end="")
+                combined_lines.append(tail)
+
     elapsed = time.time() - start
+
+    if timed_out:
+        raise subprocess.TimeoutExpired(cmd=cmd, timeout=timeout)
+
+    completed = SimpleNamespace(
+        returncode=proc.returncode,
+        stdout="".join(combined_lines),
+        stderr="",
+    )
 
     return completed, elapsed, run_name
 

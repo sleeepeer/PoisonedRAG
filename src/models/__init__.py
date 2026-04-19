@@ -6,7 +6,7 @@ from .MockModel import MockModel
 import json
 
 def load_json(file_path):
-    with open(file_path) as file:
+    with open(file_path, encoding="utf-8-sig") as file:
         results = json.load(file)
     return results
 

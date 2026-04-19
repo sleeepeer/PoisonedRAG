@@ -1,5 +1,6 @@
 import google.genai as genai
 import time
+import os
 
 from .Model import Model
 
@@ -8,16 +9,40 @@ class PaLM2(Model):
     def __init__(self, config):
         super().__init__(config)
         api_keys = config["api_key_info"]["api_keys"]
-        if len(api_keys) == 0:
-            raise ValueError("No API keys provided in config['api_key_info']['api_keys'].")
-        self.api_keys = api_keys
+        env_key = (
+            os.getenv("GEMINI_API_KEY")
+            or os.getenv("GOOGLE_API_KEY")
+            or os.getenv("PALM_API_KEY")
+        )
+
+        def is_valid_key(value):
+            if value is None:
+                return False
+            key = str(value).strip()
+            if key == "":
+                return False
+            if key.lower() in {"your api key here", "none", "null"}:
+                return False
+            return True
+
+        config_keys = [str(k).strip() for k in api_keys if is_valid_key(k)]
+        if not config_keys and is_valid_key(env_key):
+            config_keys = [str(env_key).strip()]
+
+        if len(config_keys) == 0:
+            raise ValueError(
+                "No valid PaLM/Gemini API key found. "
+                "Set one in config['api_key_info']['api_keys'] or set GEMINI_API_KEY."
+            )
+
+        self.api_keys = config_keys
         api_pos = int(config["api_key_info"]["api_key_use"])
         if api_pos == -1: # use all keys
             self.key_id = 0
             self.api_key = None
         else: # only use one key at the same time
-            assert (0 <= api_pos < len(api_keys)), "Please enter a valid API key to use"
-            self.api_key = api_keys[api_pos]
+            assert (0 <= api_pos < len(self.api_keys)), "Please enter a valid API key to use"
+            self.api_key = self.api_keys[api_pos]
         self.max_output_tokens = int(config["params"]["max_output_tokens"])
         self.max_retries = int(config["params"].get("max_retries", 2))
         self.retry_wait_sec = float(config["params"].get("retry_wait_sec", 5))

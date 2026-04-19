@@ -89,7 +89,7 @@ def save_results(results, dir, file_name="debug"):
         json.dump(dict_from_str, f)
 
 def load_results(file_name):
-    with open(os.path.join('results', file_name)) as file:
+    with open(os.path.join('results', file_name), encoding='utf-8-sig') as file:
         results = json.load(file)
     return results
 
@@ -100,7 +100,7 @@ def save_json(results, file_path="debug.json"):
         json.dump(dict_from_str, f)
 
 def load_json(file_path):
-    with open(file_path) as file:
+    with open(file_path, encoding='utf-8-sig') as file:
         results = json.load(file)
     return results
 
