@@ -91,6 +91,18 @@ Execute **run.py** to reproduce experiments.
 python run.py
 ```
 
+### 🛡️ Defenses (optional)
+
+To run the attack against a post-retrieval defense, install it and set `'defense'` in **run.py** (or pass `--defense` to **main.py**). Supported: [RAGDefender](https://github.com/SecAI-Lab/RAGDefender) (ACSAC 2025), which filters the top-k contents before they go into the prompt; everything else stays the same.
+
+```bash
+pip install ragdefender
+```
+
+```python
+'defense': 'ragdefender',   # default: 'none'
+```
+
 ### 🐱 Your own dataset
 If you want to perform experiments on your own dataset, you could refer to **evaluate_beir.py**, prepare your dataset as the beir format and use this file to compute the retrieval scores.
 
