@@ -37,6 +37,7 @@ def parse_args():
     parser.add_argument('--M', type=int, default=10, help='one of our parameters, the number of target queries')
     parser.add_argument('--seed', type=int, default=12, help='Random seed')
     parser.add_argument("--name", type=str, default='debug', help="Name of log and result.")
+    parser.add_argument('--defense', type=str, default='none', choices=['none', 'ragdefender'], help='Optional post-retrieval defense applied to the top-k contents before prompting')
 
     args = parser.parse_args()
     print(args)
@@ -85,6 +86,12 @@ def main():
                             get_emb=get_emb) 
     
     llm = create_model(args.model_config_path)
+
+    defender = None
+    if args.defense == 'ragdefender':
+        # pip install ragdefender  (https://github.com/SecAI-Lab/RAGDefender)
+        from ragdefender import RAGDefender
+        defender = RAGDefender(task_type='multi_hop' if args.eval_dataset == 'hotpotqa' else 'single_hop', gpu_id=args.gpu_id)
 
     all_results = []
     asr_list=[]
@@ -163,6 +170,8 @@ def main():
 
                     cnt_from_adv=sum([i in adv_text_set for i in topk_contents])
                     ret_sublist.append(cnt_from_adv)
+                if defender is not None:
+                    topk_contents = defender.defend(question, topk_contents)
                 query_prompt = wrap_prompt(question, topk_contents, prompt_id=4)
 
                 response = llm.query(query_prompt)

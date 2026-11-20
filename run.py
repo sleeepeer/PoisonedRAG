@@ -19,6 +19,7 @@ def run(test_params):
         --repeat_times {test_params['repeat_times']}\
         --M {test_params['M']}\
         --seed {test_params['seed']}\
+        --defense {test_params['defense']}\
         --name {log_name}\
         > {log_file} &"
         
@@ -36,6 +37,9 @@ def get_log_name(test_params):
     
     if test_params['attack_method'] != None:
         log_name += f"-adv-{test_params['attack_method']}-{test_params['score_function']}-{test_params['adv_per_query']}-{test_params['top_k']}"
+
+    if test_params['defense'] != 'none':
+        log_name += f"-defense-{test_params['defense']}"
 
     if test_params['note'] != None:
         log_name = test_params['note']
@@ -64,6 +68,9 @@ test_params = {
     'repeat_times': 10,
     'M': 10,
     'seed': 12,
+
+    # defense (optional): 'none' or 'ragdefender' (pip install ragdefender)
+    'defense': 'none',
 
     'note': None
 }
